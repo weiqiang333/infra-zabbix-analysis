@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Zabbix Alerts - Weekly Report</title>
+  </head>
+  <body style="font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-size: 14px; line-height: 1.42857143; color: #333; background-color: #fff; margin: 0; display: block;">
+    <div style="margin-right: auto; margin-left: auto; padding-left: 15px; padding-right: 15px; display: block;">
+      <div style="padding-bottom: 9px; margin: 40px 0 20px; border-bottom: 1px solid #eee; display: block;">
+        <div style="background-color: #dff0d8; border-color: #d6e9c6; color: #3c763d; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; display: block;">
+          Zabbix 警报统计周报。<br>如有疑问请发邮件至 eng-infra@163.com
+        </div>
+      </div>
+      {% for pillar, rows in cache.items() | sort %}
+      {% if pillar == 'Linux servers' %}
+      <div style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; display: block;">Total Alert:  {{ cache_count[pillar] }} ({{ dt[0] }} - {{ dt[1] }})</div>
+      <table style="border: 1px solid #ddd; width: 100%; margin-bottom: 20px; max-width: 100%; background-color: transparent; border-collapse: collapse; border-spacing: 0; display: table;">
+        <tr style="display: table-row; vertical-align: inherit; vertical-align: inherit; border-color: inherit;">
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          severity name
+          </th>
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          media type count
+          </th>
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          Total Alert
+          </th>
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          trigger type count
+          </th>
+        </tr>
+        {% for a, b in rows.items() | sort %}
+        <tr style="display: table-row; vertical-align: inherit; vertical-align: inherit; border-color: inherit;">
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          {{ a }}
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          <pre>{% for name, count in b['media_count'].items() | sort %}{{ name }}:   {{ count }}<br>{% endfor %}</pre>
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          {{ b['media_count'].values() | sum }}
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          <pre>{% for trigger in b['triggers'][:5] %}{{ trigger[0] }}:   {{ trigger[1] }}<br>{% endfor %}</pre>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      {% endfor %}
+      {% for pillar, rows in cache.items() | sort %}
+      {% if pillar != 'Linux servers' %}
+      <div style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; display: block;">Pillar: {{ pillar }}, Total Alert: {{ cache_count[pillar] }}</div>
+      <table style="border: 1px solid #ddd; width: 100%; margin-bottom: 20px; max-width: 100%; background-color: transparent; border-collapse: collapse; border-spacing: 0; display: table;">
+        <tr style="display: table-row; vertical-align: inherit; vertical-align: inherit; border-color: inherit;">
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          severity name
+          </th>
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          media type count
+          </th>
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          Total Alert
+          </th>
+          <th style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; text-align: left; display: table-cell;">
+          trigger type count
+          </th>
+        </tr>
+        {% for a, b in rows.items() | sort %}
+        <tr style="display: table-row; vertical-align: inherit; vertical-align: inherit; border-color: inherit;">
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          {{ a }}
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          <pre>{% for name, count in b['media_count'].items() | sort %}{{ name }}:   {{ count }}<br>{% endfor %}</pre>
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          {{ b['media_count'].values() | sum }}
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px; line-height: 1.42857143; vertical-align: top; display: table-cell;">
+          <pre>{% for trigger in b['triggers'][:5] %}{{ trigger[0] }}:   {{ trigger[1] }}<br>{% endfor %}</pre>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </body>
+</html>
